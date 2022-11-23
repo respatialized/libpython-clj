@@ -428,6 +428,15 @@ class Foo:
   (is (true? (boolean (py. (libpython-clj2.python.bridge-as-python/map-as-python {}) __iter__)))))
 
 
+(deftest bigint-conversion
+  (let [large-int 15578876784678163569N
+        demo-program (fn [] (py/run-simple-string "a = 15578876784678163569"))]
+    (is (= large-int (-> large-int py/as-python py/as-jvm))
+        "BigInt values should successfully convert to Python and back")
+
+    (is (= large-int (get-in (demo-program) [:globals "a"]))
+        "Python integers should successfully convert to BigInts")))
+
 (comment
   (require '[libpython-clj.require :refer [require-python]])
 
